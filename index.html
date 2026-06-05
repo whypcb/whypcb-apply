@@ -1056,10 +1056,16 @@
     // Show app ID immediately (before fetch, so candidate sees it even if slow)
     document.getElementById('ty-appid').textContent = appId;
 
-    // Native form POST via hidden iframe — zero CORS issues, works from any domain
-    const hiddenForm = document.getElementById('_submitForm');
-    document.getElementById('_payloadInput').value = JSON.stringify(data);
-    hiddenForm.submit();
+    // POST as plain text — sends raw JSON in body, which Apps Script reads via e.postData.contents
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      });
+    } catch (err) {
+      // CORS read errors are expected and harmless — the POST still reaches Google
+    }
 
     // Show thank you page
     document.getElementById('form-wrap').style.display = 'none';
@@ -1124,19 +1130,6 @@ That's it. Every form submission will appear as a new row in your Google Sheet.
 =================================================================
 -->
 
-
-<!-- Hidden form for zero-CORS native POST submission -->
-<iframe name="_submitFrame" id="_submitFrame" style="display:none"></iframe>
-<form id="_submitForm" action="" method="POST" target="_submitFrame" style="display:none">
-  <input type="hidden" name="payload" id="_payloadInput" value="">
-</form>
-
-<script>
-  document.getElementById('_submitForm').action = GOOGLE_SCRIPT_URL;
-  document.getElementById('_submitFrame').onload = function() {
-    // iframe loaded = submission received
-  };
-</script>
 
 </body>
 </html>
