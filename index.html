@@ -1056,16 +1056,10 @@
     // Show app ID immediately (before fetch, so candidate sees it even if slow)
     document.getElementById('ty-appid').textContent = appId;
 
-    // no-cors POST — bypasses CORS entirely, body goes straight to Apps Script e.postData.contents
-    try {
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(data)
-      });
-    } catch (err) {
-      // silently ignore
-    }
+    // Hidden iframe form POST — proven working approach for Google Apps Script
+    // Sends data as e.parameter.payload which the script reads correctly
+    document.getElementById('_payloadInput').value = JSON.stringify(data);
+    document.getElementById('_submitForm').submit();
 
     // Show thank you page
     document.getElementById('form-wrap').style.display = 'none';
@@ -1130,6 +1124,16 @@ That's it. Every form submission will appear as a new row in your Google Sheet.
 =================================================================
 -->
 
+
+
+<!-- Hidden iframe for zero-CORS form POST to Google Apps Script -->
+<iframe name="_submitFrame" id="_submitFrame" style="display:none"></iframe>
+<form id="_submitForm" action="GOOGLE_SCRIPT_URL_PLACEHOLDER" method="POST" target="_submitFrame" style="display:none">
+  <input type="hidden" name="payload" id="_payloadInput" value="">
+</form>
+<script>
+  document.getElementById('_submitForm').action = GOOGLE_SCRIPT_URL;
+</script>
 
 </body>
 </html>
