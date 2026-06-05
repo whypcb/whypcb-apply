@@ -1056,15 +1056,15 @@
     // Show app ID immediately (before fetch, so candidate sees it even if slow)
     document.getElementById('ty-appid').textContent = appId;
 
-    // POST as plain text — sends raw JSON in body, which Apps Script reads via e.postData.contents
+    // no-cors POST — bypasses CORS entirely, body goes straight to Apps Script e.postData.contents
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
+        mode: 'no-cors',
         body: JSON.stringify(data)
       });
     } catch (err) {
-      // CORS read errors are expected and harmless — the POST still reaches Google
+      // silently ignore
     }
 
     // Show thank you page
