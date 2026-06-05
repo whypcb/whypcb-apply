@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PCB Designer Application — WHYPCB Technologies</title>
+  <style>
+    :root {
+      --navy: #0A1628;
+      --navy-mid: #0D1F3C;
+      --blue: #2563EB;
+      --blue-light: #3B82F6;
+      --orange: #F5A623;
+      --white: #FFFFFF;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-400: #94A3B8;
+      --gray-600: #475569;
+      --gray-800: #1E293B;
+      --green: #10B981;
+      --red: #EF4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--navy);
+      padding: 24px 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--orange);
+    }
+    .header-logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+    .header-logo span { color: var(--orange); }
+    .header-tagline {
+      color: var(--gray-400);
+      font-size: 13px;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+    .header-title {
+      margin-top: 16px;
+      color: var(--white);
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .header-sub {
+      color: var(--blue-light);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* MAIN */
+    .container {
+      max-width: 780px;
+      margin: 32px auto;
+      padding: 0 16px 60px;
+    }
+
+    /* INTRO BOX */
+    .intro-box {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--blue);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .intro-box h3 { font-size: 15px; color: var(--navy); margin-bottom: 10px; }
+    .intro-box p { font-size: 14px; color: var(--gray-600); line-height: 1.6; }
+    .intro-box ul { margin-top: 8px; padding-left: 18px; }
+    .intro-box li { font-size: 14px; color: var(--gray-600); line-height: 1.8; }
+
+    /* SECTION */
+    .section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .section-num {
+      width: 30px; height: 30px;
+      background: var(--blue);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-title { font-size: 16px; font-weight: 700; color: var(--navy); }
+    .section-desc { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+
+    /* FIELDS */
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 6px;
+    }
+    .field label .req { color: var(--red); margin-left: 2px; }
+    .field label .hint {
+      font-weight: 400;
+      color: var(--gray-400);
+      font-size: 12px;
+      margin-left: 6px;
+    }
+    .field input[type="text"],
+    .field input[type="email"],
+    .field input[type="tel"],
+    .field input[type="number"],
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--blue);
+      background: white;
+    }
+    .field textarea { resize: vertical; min-height: 90px; }
+    .field select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394A3B8' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+    /* TWO COLUMN */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* RADIO / CHECKBOX GROUP */
+    .options-group { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .option-item:hover { border-color: var(--blue-light); background: #EFF6FF; }
+    .option-item input[type="radio"],
+    .option-item input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: var(--blue);
+      flex-shrink: 0;
+      width: 16px; height: 16px;
+    }
+    .option-item span { font-size: 14px; color: var(--gray-800); line-height: 1.5; }
+    .options-inline { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .options-inline .option-item { flex: 0 0 auto; padding: 7px 14px; }
+
+    /* CHIP CHECKBOXES FOR TOOLS */
+    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .chip-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--gray-600);
+      transition: all 0.15s;
+      background: var(--gray-50);
+    }
+    .chip-label:hover { border-color: var(--blue); color: var(--blue); }
+    .chip-label input { display: none; }
+    .chip-label.checked { background: var(--blue); border-color: var(--blue); color: white; }
+
+    /* RATING STARS */
+    .rating-group { display: flex; gap: 6px; margin-top: 4px; }
+    .rating-group label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--gray-400);
+      transition: all 0.15s;
+      min-width: 50px;
+      text-align: center;
+    }
+    .rating-group label:hover { border-color: var(--blue); color: var(--blue); }
+    .rating-group input { display: none; }
+    .rating-group input:checked + label { background: var(--blue); border-color: var(--blue); color: white; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--gray-200); margin: 20px 0; }
+
+    /* NOTE BOX */
+    .note-box {
+      background: #FFF7ED;
+      border: 1px solid #FED7AA;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #92400E;
+      margin-bottom: 20px;
+    }
+
+    /* SUBMIT */
+    .submit-area { text-align: center; margin-top: 32px; }
+    .submit-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 14px 48px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.3px;
+    }
+    .submit-btn:hover { background: #1D4ED8; transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
+    .submit-note { font-size: 12px; color: var(--gray-400); margin-top: 10px; }
+
+    /* THANK YOU PAGE */
+    #thank-you {
+      display: none;
+      max-width: 560px;
+      margin: 60px auto;
+      text-align: center;
+      padding: 20px;
+    }
+    .ty-icon {
+      width: 72px; height: 72px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+    .ty-title { font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+    .ty-msg { font-size: 15px; color: var(--gray-600); line-height: 1.7; margin-bottom: 24px; }
+    .ty-contact {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: left;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .ty-contact p { font-size: 13px; color: var(--gray-600); margin-bottom: 8px; }
+    .ty-contact a { color: var(--blue); font-weight: 600; text-decoration: none; }
+    .ty-brand { margin-top: 24px; font-size: 13px; color: var(--gray-400); }
+
+    /* PROGRESS BAR */
+    .progress-bar-wrap { background: var(--gray-200); height: 4px; border-radius: 2px; margin-bottom: 28px; }
+    .progress-bar { background: var(--blue); height: 4px; border-radius: 2px; transition: width 0.4s; width: 0%; }
+
+    /* ERROR */
+    .field-error { font-size: 12px; color: var(--red); margin-top: 4px; display: none; }
+
+    /* SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">W°<span>WhyPCB</span></div>
+  <div class="header-tagline">The Easiest Way to Order PCBs · whypcb.com</div>
+  <div class="header-title">PCB Designer & Customer Solutions — Application Form</div>
+  <div class="header-sub">Takes about 8–10 minutes · All information is confidential</div>
+</div>
+
+<!-- FORM -->
+<div class="container" id="form-wrap">
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress"></div></div>
+
+  <div class="intro-box">
+    <h3>Before you begin</h3>
+    <p>This form helps us understand your background, skills, and communication style. There are no trick questions — just answer honestly. We read every application personally.</p>
+    <ul>
+      <li>Role: PCB Designer & Customer Solutions Executive</li>
+      <li>Location: Surat / Work from Home (pan-India)</li>
+      <li>Salary: ₹12,000 – ₹55,000/month based on experience</li>
+      <li>HR Contact: +91 90164 22850 | hr.whypcb@gmail.com</li>
+    </ul>
+  </div>
+
+  <form id="appForm" novalidate>
+
+    <!-- SECTION 1: PERSONAL DETAILS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div>
+          <div class="section-title">Personal Details</div>
+          <div class="section-desc">Basic contact and location info</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" name="full_name" placeholder="Your full name" required />
+          <div class="field-error" id="err-full_name">Please enter your name.</div>
+        </div>
+        <div class="field">
+          <label>WhatsApp Number <span class="req">*</span></label>
+          <input type="tel" name="whatsapp" placeholder="+91 98765 43210" required />
+          <div class="field-error" id="err-whatsapp">Please enter a valid number.</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="you@email.com" required />
+          <div class="field-error" id="err-email">Please enter a valid email.</div>
+        </div>
+        <div class="field">
+          <label>City / Location <span class="req">*</span></label>
+          <input type="text" name="city" placeholder="e.g. Surat, Ahmedabad, Mumbai" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Work Preference <span class="req">*</span></label>
+        <div class="options-group options-inline">
+          <label class="option-item"><input type="radio" name="work_mode" value="Work from Home" required /><span>Work from Home</span></label>
+          <label class="option-item"><input type="radio" name="work_mode" value="Office (Surat)" /><span>Office – Surat</span></label>
+          <label class="option-item"><input type="radio" name="work_mode" value="Either is fine" /><span>Either is fine</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: EDUCATION & EXPERIENCE -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div>
+          <div class="section-title">Education & Experience</div>
+          <div class="section-desc">Your background in electronics/engineering</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Highest Qualification <span class="req">*</span></label>
+          <select name="qualification" required>
+            <option value="">Select…</option>
+            <option>10th / SSC</option>
+            <option>12th / HSC</option>
+            <option>ITI / Diploma</option>
+            <option>B.E. / B.Tech</option>
+            <option>M.E. / M.Tech</option>
+            <option>B.Sc Electronics</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Stream / Branch</label>
+          <input type="text" name="stream" placeholder="e.g. Electronics, ECE, EEE, IT" />
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Years of PCB Design Experience <span class="req">*</span></label>
+          <select name="experience_years" required>
+            <option value="">Select…</option>
+            <option>Fresher (0 years — learning on my own)</option>
+            <option>Less than 1 year</option>
+            <option>1–2 years</option>
+            <option>2–4 years</option>
+            <option>4+ years</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Employment Status <span class="req">*</span></label>
+          <select name="employment_status" required>
+            <option value="">Select…</option>
+            <option>Fresher / Student</option>
+            <option>Currently employed</option>
+            <option>Freelancer</option>
+            <option>Currently not working</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field" id="company-field">
+        <label>Current / Last Company Name <span class="hint">(if applicable)</span></label>
+        <input type="text" name="current_company" placeholder="Company name or 'N/A'" />
+      </div>
+
+      <div class="field">
+        <label>Current / Last Job Role <span class="hint">(if applicable)</span></label>
+        <input type="text" name="current_role" placeholder="e.g. Electronics Engineer, PCB Designer, Fresher" />
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Notice Period</label>
+          <select name="notice_period">
+            <option value="">Select…</option>
+            <option>Immediate (can join now)</option>
+            <option>15 days</option>
+            <option>30 days</option>
+            <option>60 days</option>
+            <option>Not applicable</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Expected Monthly Salary (₹) <span class="req">*</span></label>
+          <input type="text" name="expected_salary" placeholder="e.g. ₹18,000 or ₹25,000" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: PCB DESIGN SKILLS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div>
+          <div class="section-title">PCB Design Skills</div>
+          <div class="section-desc">Tools and technical capabilities</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Which PCB design tools have you used? <span class="req">*</span> <span class="hint">Select all that apply</span></label>
+        <div class="chip-group" id="tools-chips">
+          <label class="chip-label"><input type="checkbox" name="tools" value="KiCad" />KiCad</label>
+          <label class="chip-label"><input type="checkbox" name="tools" value="EasyEDA" />EasyEDA</label>
+          <label class="chip-label"><input type="checkbox" name="tools" value="Altium Designer" />Altium Designer</label>
+          <label class="chip-label"><input type="checkbox" name="tools" value="Eagle" />Eagle</label>
+          <label class="chip-label"><input type="checkbox" name="tools" value="OrCAD" />OrCAD</label>
+          <label class="chip-label"><input type="checkbox" name="tools" value="Proteus" />Proteus</label>
+          <label class="chip-label"><input type="checkbox" name="tools" value="DipTrace" />DipTrace</label>
+          <label class="chip-label"><input type="checkbox" name="tools" value="None yet (learning)" />None yet (learning)</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Primary / Most Comfortable Tool</label>
+        <input type="text" name="primary_tool" placeholder="e.g. EasyEDA — I use it daily" />
+      </div>
+
+      <div class="field">
+        <label>How many PCBs have you designed approximately?</label>
+        <select name="pcb_count">
+          <option value="">Select…</option>
+          <option>None yet</option>
+          <option>1–5</option>
+          <option>6–20</option>
+          <option>21–50</option>
+          <option>50+</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Which of these have you done? <span class="hint">Select all that apply</span></label>
+        <div class="options-group">
+          <label class="option-item"><input type="checkbox" name="skills_done" value="Schematic design from scratch" /><span>Schematic design from scratch</span></label>
+          <label class="option-item"><input type="checkbox" name="skills_done" value="PCB layout and routing" /><span>PCB layout and routing</span></label>
+          <label class="option-item"><input type="checkbox" name="skills_done" value="Gerber file export" /><span>Gerber file export</span></label>
+          <label class="option-item"><input type="checkbox" name="skills_done" value="DRC (Design Rule Check)" /><span>DRC (Design Rule Check)</span></label>
+          <label class="option-item"><input type="checkbox" name="skills_done" value="4-layer PCB design" /><span>4-layer PCB design</span></label>
+          <label class="option-item"><input type="checkbox" name="skills_done" value="SMD component placement" /><span>SMD component placement</span></label>
+          <label class="option-item"><input type="checkbox" name="skills_done" value="BOM (Bill of Materials) preparation" /><span>BOM (Bill of Materials) preparation</span></label>
+          <label class="option-item"><input type="checkbox" name="skills_done" value="Reverse engineering a PCB from photo or physical board" /><span>Reverse engineering a PCB from photo or physical board</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Describe your best PCB project in 2–3 lines <span class="req">*</span></label>
+        <textarea name="best_project" placeholder="What was it for? What did you design? What tools did you use? Did it get manufactured?" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Portfolio / Project Link <span class="hint">(Google Drive, GitHub, EasyEDA link, photos — anything)</span></label>
+        <input type="text" name="portfolio_link" placeholder="https://drive.google.com/... or paste any link" />
+      </div>
+
+      <div class="field">
+        <label>Upload Your Resume / CV <span class="hint">(PDF, DOC, or image — max 5MB)</span></label>
+        <div id="resume-drop" style="border:2px dashed var(--gray-200);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:var(--gray-50);transition:border-color 0.2s;" onclick="document.getElementById('resume_file').click()">
+          <div id="resume-label" style="color:var(--gray-400);font-size:14px;">
+            📎 Click to upload or drag & drop your resume here
+          </div>
+          <input type="file" id="resume_file" name="resume_file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display:none;" />
+        </div>
+        <div style="font-size:11px;color:var(--gray-400);margin-top:6px;">Note: Resume is saved to your Google Drive submission folder if configured. Otherwise share via WhatsApp: +91 90164 22850</div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: AI IN PCB DESIGN -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div>
+          <div class="section-title">AI in PCB Design</div>
+          <div class="section-desc">We're curious about how engineers are using AI tools — no right or wrong answers</div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        🤖 AI tools in electronics are evolving fast. We want to know your experience — whether you've used them heavily, tried once, or never touched them. All answers are equally fine.
+      </div>
+
+      <div class="field">
+        <label>Have you used any AI tools for PCB design or electronics work? <span class="req">*</span></label>
+        <div class="options-group">
+          <label class="option-item"><input type="radio" name="ai_used" value="Yes, I use AI regularly in my PCB workflow" required /><span>Yes, I use AI regularly in my PCB workflow</span></label>
+          <label class="option-item"><input type="radio" name="ai_used" value="I have tried it a few times" /><span>I have tried it a few times</span></label>
+          <label class="option-item"><input type="radio" name="ai_used" value="I know about it but haven't used yet" /><span>I know about it but haven't used yet</span></label>
+          <label class="option-item"><input type="radio" name="ai_used" value="No, I haven't explored AI tools" /><span>No, I haven't explored AI tools</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Which AI tools have you used for electronics / PCB work? <span class="hint">Select all that apply</span></label>
+        <div class="chip-group">
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="ChatGPT" />ChatGPT</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="Claude (Anthropic)" />Claude</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="Copilot / Bing AI" />Copilot</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="Gemini" />Gemini</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="EasyEDA AI features" />EasyEDA AI</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="Flux.ai" />Flux.ai</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="Autodesk AI (Fusion)" />Autodesk AI</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="GitHub Copilot for scripting" />GitHub Copilot</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="Other" />Other</label>
+          <label class="chip-label"><input type="checkbox" name="ai_tools_used" value="None" />None</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>What have you used AI for in your electronics / PCB work? <span class="hint">Select all that apply</span></label>
+        <div class="options-group">
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Generating or checking schematic designs" /><span>Generating or checking schematic designs</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Component selection (choosing right IC, resistor values, etc.)" /><span>Component selection (choosing right IC, resistor values, etc.)</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Writing or debugging PCB design scripts / macros" /><span>Writing or debugging PCB design scripts / macros</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Generating Gerber files or layer exports" /><span>Generating or verifying Gerber files / layer exports</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Asking AI to explain errors (DRC, ERC errors)" /><span>Asking AI to explain DRC / ERC errors</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Reverse engineering help — identifying components from photos" /><span>Reverse engineering — identifying components from photos</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Writing BOMs or datasheets summaries" /><span>Writing BOMs or summarising datasheets</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Learning / understanding concepts faster" /><span>Learning / understanding electronics concepts faster</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Customer communication drafts" /><span>Drafting customer or technical communication</span></label>
+          <label class="option-item"><input type="checkbox" name="ai_use_cases" value="Not used AI for any of these" /><span>Not used AI for any of these yet</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>In your own words — how do you use AI in your PCB or electronics workflow? <span class="hint">(If you don't use it, what's your reason?)</span></label>
+        <textarea name="ai_workflow_description" placeholder="e.g. 'I use ChatGPT to help select component values and check my schematic logic before laying out the PCB. I also ask it to explain JLCPCB DRC errors.' — Or: 'I haven't used AI tools yet because I'm not sure where to start.'" style="min-height:90px;"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Do you think AI can fully replace a PCB designer in the next 5 years?</label>
+        <div class="options-group">
+          <label class="option-item"><input type="radio" name="ai_replace_opinion" value="Yes, AI will fully replace PCB designers" /><span>Yes — AI will fully replace PCB designers</span></label>
+          <label class="option-item"><input type="radio" name="ai_replace_opinion" value="Partially — AI will handle simple designs, humans for complex" /><span>Partially — AI will handle simple designs, humans for complex</span></label>
+          <label class="option-item"><input type="radio" name="ai_replace_opinion" value="No — AI is a tool, humans will always be needed" /><span>No — AI is just a tool, human judgment is always needed</span></label>
+          <label class="option-item"><input type="radio" name="ai_replace_opinion" value="Not sure" /><span>Not sure</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Are you open to learning and using AI tools as part of this job?</label>
+        <div class="options-group options-inline">
+          <label class="option-item"><input type="radio" name="ai_open_to_learn" value="Yes, very interested" /><span>Yes, very interested</span></label>
+          <label class="option-item"><input type="radio" name="ai_open_to_learn" value="Open to it" /><span>Open to it</span></label>
+          <label class="option-item"><input type="radio" name="ai_open_to_learn" value="Neutral" /><span>Neutral</span></label>
+          <label class="option-item"><input type="radio" name="ai_open_to_learn" value="Prefer traditional methods" /><span>Prefer traditional methods</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: TECHNICAL SCREENING -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div>
+          <div class="section-title">Technical Scenarios</div>
+          <div class="section-desc">How you would handle real situations — no wrong answers, we want to see your thinking</div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        💡 These are real situations we face every day at WHYPCB. Answer based on what you would actually do — there's no single correct answer.
+      </div>
+
+      <div class="field">
+        <label>1. A customer sends only a photo of an existing PCB and says "I need 20 of these made." What do you do first? <span class="req">*</span></label>
+        <textarea name="scenario_1" placeholder="Walk us through your step-by-step approach…" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>2. A customer has an idea for a PCB — no schematic, no Gerber, just a written description. How do you proceed? <span class="req">*</span></label>
+        <textarea name="scenario_2" placeholder="What information do you ask for first? How do you convert their idea into a design?" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>3. You export a Gerber file and the PCB manufacturer says there is a spacing error. How do you find and fix it?</label>
+        <textarea name="scenario_3" placeholder="What steps do you take?" style="min-height:70px;"></textarea>
+      </div>
+
+      <div class="field">
+        <label>4. How would you explain the difference between 2-layer and 4-layer PCB to a non-technical customer in simple words?</label>
+        <textarea name="scenario_4" placeholder="Write it as if you're explaining over WhatsApp to a first-time buyer…" style="min-height:70px;"></textarea>
+      </div>
+
+      <div class="field">
+        <label>5. PCB Design Speed — How long does it typically take you to complete the following? <span class="hint">(Honest estimates — we know it depends on complexity)</span></label>
+        <div style="display:grid;gap:10px;margin-top:6px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="field" style="margin:0;">
+              <label style="font-weight:400;font-size:13px;color:var(--gray-600);">Simple 2-layer PCB (basic circuit, 10–20 components)</label>
+              <select name="speed_simple">
+                <option value="">Select…</option>
+                <option>Less than 2 hours</option>
+                <option>2–4 hours</option>
+                <option>Half a day (4–6 hours)</option>
+                <option>1 full day</option>
+                <option>2–3 days</option>
+                <option>I haven't done this yet</option>
+              </select>
+            </div>
+            <div class="field" style="margin:0;">
+              <label style="font-weight:400;font-size:13px;color:var(--gray-600);">Medium PCB (20–50 components, 2–4 layers)</label>
+              <select name="speed_medium">
+                <option value="">Select…</option>
+                <option>Half a day</option>
+                <option>1 full day</option>
+                <option>2–3 days</option>
+                <option>4–5 days</option>
+                <option>More than a week</option>
+                <option>I haven't done this yet</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin:0;">
+            <label style="font-weight:400;font-size:13px;color:var(--gray-600);">Reverse engineering a PCB from a clear photo (copying an existing board)</label>
+            <select name="speed_reverse">
+              <option value="">Select…</option>
+              <option>Less than 4 hours (simple board)</option>
+              <option>1 day</option>
+              <option>2–3 days</option>
+              <option>Depends heavily — need more info</option>
+              <option>I haven't done reverse engineering yet</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-top:10px;margin-bottom:0;">
+          <label style="font-weight:400;font-size:13px;color:var(--gray-600);">What factors slow you down the most when designing a PCB?</label>
+          <textarea name="speed_blockers" placeholder="e.g. Component library missing, unclear customer requirements, routing dense boards, no reference schematic…" style="min-height:65px;margin-top:4px;"></textarea>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Are you familiar with JLCPCB or PCBWay design rules?</label>
+        <div class="options-group options-inline">
+          <label class="option-item"><input type="radio" name="jlcpcb_familiarity" value="Yes, I have ordered from them" /><span>Yes, ordered from them</span></label>
+          <label class="option-item"><input type="radio" name="jlcpcb_familiarity" value="I know about them" /><span>I know about them</span></label>
+          <label class="option-item"><input type="radio" name="jlcpcb_familiarity" value="Not familiar yet" /><span>Not familiar yet</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: COMMUNICATION & CUSTOMER HANDLING -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div>
+          <div class="section-title">Communication & Customer Handling</div>
+          <div class="section-desc">This role involves direct client interaction — we want to see how you communicate</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>How comfortable are you communicating with customers? <span class="req">*</span></label>
+        <div class="options-group">
+          <label class="option-item"><input type="radio" name="comm_comfort" value="Very comfortable — I enjoy talking to clients" required /><span>Very comfortable — I enjoy talking to clients</span></label>
+          <label class="option-item"><input type="radio" name="comm_comfort" value="Comfortable with written (WhatsApp/email), less on calls" /><span>Comfortable with written (WhatsApp/email), less on calls</span></label>
+          <label class="option-item"><input type="radio" name="comm_comfort" value="I can do it but prefer technical work" /><span>I can do it but prefer technical work</span></label>
+          <label class="option-item"><input type="radio" name="comm_comfort" value="Not comfortable with customer interaction" /><span>Not comfortable with customer interaction</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Languages you can communicate in <span class="hint">Select all that apply</span></label>
+        <div class="chip-group">
+          <label class="chip-label"><input type="checkbox" name="languages" value="Hindi" />Hindi</label>
+          <label class="chip-label"><input type="checkbox" name="languages" value="English" />English</label>
+          <label class="chip-label"><input type="checkbox" name="languages" value="Gujarati" />Gujarati</label>
+          <label class="chip-label"><input type="checkbox" name="languages" value="Marathi" />Marathi</label>
+          <label class="chip-label"><input type="checkbox" name="languages" value="Tamil" />Tamil</label>
+          <label class="chip-label"><input type="checkbox" name="languages" value="Telugu" />Telugu</label>
+          <label class="chip-label"><input type="checkbox" name="languages" value="Other" />Other</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>A customer messages you: "Bhai mujhe PCB banana hai, kya karna padega?" — Write your reply below <span class="req">*</span></label>
+        <textarea name="customer_reply" placeholder="Write exactly what you would reply on WhatsApp. Hindi, English, or mix — whatever feels natural." required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Have you ever done any sales, customer support, or client-facing work before?</label>
+        <div class="options-group options-inline">
+          <label class="option-item"><input type="radio" name="sales_experience" value="Yes, professionally" /><span>Yes, professionally</span></label>
+          <label class="option-item"><input type="radio" name="sales_experience" value="Informally / freelance" /><span>Informally / freelance</span></label>
+          <label class="option-item"><input type="radio" name="sales_experience" value="No, but I'm open to it" /><span>No, but open to it</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 7: INDUSTRY BACKGROUND (Market Intel - framed naturally) -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div>
+          <div class="section-title">Your Industry Background</div>
+          <div class="section-desc">Helps us understand your work environment and match you to the right projects</div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        🗒️ These questions help us assign you to the right type of customer projects. Answer based on your current or previous workplace — or skip if not applicable.
+      </div>
+
+      <div class="field">
+        <label>What industry / sector does your current or last company operate in? <span class="hint">Select all that apply</span></label>
+        <div class="chip-group">
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Electronics Manufacturing" />Electronics Manufacturing</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="IoT / Hardware Startup" />IoT / Hardware Startup</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Automotive / EV" />Automotive / EV</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Industrial Automation" />Industrial Automation</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Medical Devices" />Medical Devices</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Telecom / Networking" />Telecom / Networking</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Defence / Aerospace" />Defence / Aerospace</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="R&D / Research Institute" />R&amp;D / Research Institute</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Engineering College / University" />Engineering College / University</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="IT / Software (hardware projects)" />IT / Software</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Robotics" />Robotics</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Solar / Renewable Energy" />Solar / Renewable Energy</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Freelancer / Independent" />Freelancer / Independent</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Other" />Other</label>
+          <label class="chip-label"><input type="checkbox" name="industry_sector" value="Not applicable" />Not applicable</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Does / did your company use PCBs in their products or projects?</label>
+        <div class="options-group options-inline">
+          <label class="option-item"><input type="radio" name="company_uses_pcb" value="Yes, regularly" /><span>Yes, regularly</span></label>
+          <label class="option-item"><input type="radio" name="company_uses_pcb" value="Sometimes / occasionally" /><span>Sometimes</span></label>
+          <label class="option-item"><input type="radio" name="company_uses_pcb" value="No" /><span>No</span></label>
+          <label class="option-item"><input type="radio" name="company_uses_pcb" value="Not applicable" /><span>Not applicable</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>If yes — where does your company currently source / order PCBs from? <span class="hint">(Select all that apply)</span></label>
+        <div class="options-group">
+          <label class="option-item"><input type="checkbox" name="pcb_source" value="Directly from China (JLCPCB, PCBWay, etc.)" /><span>Directly from China (JLCPCB, PCBWay, etc.)</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_source" value="Indian PCB manufacturer" /><span>Indian PCB manufacturer</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_source" value="Through a local agent / reseller" /><span>Through a local agent / reseller</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_source" value="We handle it ourselves (someone in team orders)" /><span>We handle it ourselves (someone in team orders)</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_source" value="Not sure / I'm not involved in procurement" /><span>Not sure / I'm not involved in procurement</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_source" value="Not applicable" /><span>Not applicable</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Approximately how many PCBs does your company order per month? <span class="hint">(rough estimate is fine)</span></label>
+        <select name="company_pcb_volume">
+          <option value="">Select…</option>
+          <option>Not applicable / Don't know</option>
+          <option>Less than 10</option>
+          <option>10–50</option>
+          <option>50–200</option>
+          <option>200–500</option>
+          <option>500+</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>What challenges does your company face with PCB ordering / procurement? <span class="hint">(if any — this helps us understand common industry problems)</span></label>
+        <div class="options-group">
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="Customs / import duty issues" /><span>Customs / import duty issues</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="No GST invoice from supplier" /><span>No GST invoice from supplier</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="USD payment / forex card needed" /><span>USD payment / forex card needed</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="Long delivery times" /><span>Long delivery times</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="Hidden charges / price surprises" /><span>Hidden charges / price surprises</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="No local support" /><span>No local support</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="No issues — process is smooth" /><span>No issues — process is smooth</span></label>
+          <label class="option-item"><input type="checkbox" name="pcb_pain_points" value="Not applicable" /><span>Not applicable</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Who in your company is typically responsible for placing PCB orders?</label>
+        <select name="pcb_decision_maker">
+          <option value="">Select…</option>
+          <option>I do it myself</option>
+          <option>Engineering / R&D team</option>
+          <option>Purchase / Procurement department</option>
+          <option>Manager / Director</option>
+          <option>Not applicable</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Does your company have a formal vendor registration / approval process for new suppliers?</label>
+        <div class="options-group options-inline">
+          <label class="option-item"><input type="radio" name="vendor_registration" value="Yes, formal process" /><span>Yes, formal process</span></label>
+          <label class="option-item"><input type="radio" name="vendor_registration" value="Informal — manager approves" /><span>Informal</span></label>
+          <label class="option-item"><input type="radio" name="vendor_registration" value="No process" /><span>No process</span></label>
+          <label class="option-item"><input type="radio" name="vendor_registration" value="Not applicable" /><span>Not applicable</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 8: AVAILABILITY & MOTIVATION -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div>
+          <div class="section-title">Availability & Motivation</div>
+          <div class="section-desc">Last few questions</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Why do you want to work with WHYPCB specifically? <span class="req">*</span></label>
+        <textarea name="why_whypcb" placeholder="Be honest — even if it's just because you need a job. We appreciate genuine answers." required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Where did you find out about this job opening?</label>
+        <select name="source">
+          <option value="">Select…</option>
+          <option>LinkedIn</option>
+          <option>Naukri.com</option>
+          <option>Indeed</option>
+          <option>Internshala</option>
+          <option>Instagram</option>
+          <option>WhatsApp Group</option>
+          <option>Telegram Group</option>
+          <option>Reddit</option>
+          <option>Friend / Referral</option>
+          <option>College / Placement Cell</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Available to start from</label>
+          <input type="text" name="available_from" placeholder="e.g. Immediately, 15 days, 1st July" />
+        </div>
+        <div class="field">
+          <label>Preferred working hours</label>
+          <select name="preferred_hours">
+            <option value="">Select…</option>
+            <option>10 AM – 7 PM (standard)</option>
+            <option>Morning shift (8 AM – 5 PM)</option>
+            <option>Flexible — output based</option>
+            <option>Part-time only</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 9: FEEDBACK FOR US -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <div>
+          <div class="section-title">Your Suggestions for Us</div>
+          <div class="section-desc">Optional — we genuinely read this</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Any suggestions to improve our hiring process or the job role itself?</label>
+        <textarea name="suggestions" placeholder="Was anything unclear? Is there something about the role you'd like to know more about? Any honest feedback is welcome." style="min-height:80px;"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Anything else you want us to know about you?</label>
+        <textarea name="anything_else" placeholder="Side projects, certifications, special skills, context about your situation — anything." style="min-height:80px;"></textarea>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <button type="submit" class="submit-btn" id="submitBtn">Submit Application →</button>
+      <div class="submit-note">Your data is kept confidential and only used for hiring evaluation.</div>
+    </div>
+
+  </form>
+</div>
+
+<!-- THANK YOU PAGE -->
+<div id="thank-you">
+  <div class="ty-icon">✓</div>
+  <div class="ty-title">Application Submitted!</div>
+  <div id="ty-appid-box" style="display:inline-block;background:#EFF6FF;border:2px solid var(--blue);border-radius:10px;padding:12px 28px;margin:0 auto 20px;text-align:center;">
+    <div style="font-size:12px;color:var(--gray-400);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Your Application ID</div>
+    <div id="ty-appid" style="font-size:26px;font-weight:800;color:var(--blue);letter-spacing:3px;">WP-????</div>
+    <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">Save this number — mention it when you contact us</div>
+  </div>
+  <div class="ty-msg">
+    Thank you for applying to WHYPCB Technologies.<br/>
+    We have received your application and will review it personally.<br/>
+    You will hear from us within <strong>2–3 working days</strong>.
+  </div>
+  <div class="ty-contact">
+    <p>Meanwhile, if you have any questions, reach out to us:</p>
+    <p>📧 Email: <a href="mailto:hr.whypcb@gmail.com">hr.whypcb@gmail.com</a></p>
+    <p>📞 WhatsApp HR: <a href="https://wa.me/919016422850">+91 90164 22850</a></p>
+    <p>🌐 Learn more: <a href="https://whypcb.com" target="_blank">whypcb.com</a></p>
+  </div>
+  <div class="ty-brand">WHYPCB Technologies · Surat, Gujarat · The Easiest Way to Order PCBs</div>
+</div>
+
+<script>
+  // =============================================
+  // CONFIGURATION — PASTE YOUR GOOGLE APPS SCRIPT URL HERE
+  // =============================================
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLs8JhPra9pMO_-xvOAJYOEx443Km1Ms2OioIxPE9mk4wvF51_x7A8V1jOGrBojA/exec";
+  // See setup instructions below in comments
+  // =============================================
+
+  // Resume upload — show filename + drag-drop
+  const resumeInput = document.getElementById('resume_file');
+  const resumeDrop = document.getElementById('resume-drop');
+  const resumeLabel = document.getElementById('resume-label');
+  resumeInput.addEventListener('change', () => {
+    if (resumeInput.files[0]) {
+      resumeLabel.innerHTML = '✅ <strong>' + resumeInput.files[0].name + '</strong> selected';
+      resumeDrop.style.borderColor = 'var(--green)';
+      resumeDrop.style.background = '#F0FDF4';
+    }
+  });
+  resumeDrop.addEventListener('dragover', e => { e.preventDefault(); resumeDrop.style.borderColor = 'var(--blue)'; });
+  resumeDrop.addEventListener('dragleave', () => { resumeDrop.style.borderColor = 'var(--gray-200)'; });
+  resumeDrop.addEventListener('drop', e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const dt = new DataTransfer(); dt.items.add(file); resumeInput.files = dt.files;
+      resumeLabel.innerHTML = '✅ <strong>' + file.name + '</strong> selected';
+      resumeDrop.style.borderColor = 'var(--green)';
+      resumeDrop.style.background = '#F0FDF4';
+    }
+  });
+
+  // Chip checkboxes visual toggle
+  document.querySelectorAll('.chip-label input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.chip-label').classList.toggle('checked', cb.checked);
+    });
+  });
+
+  // Progress bar
+  const fields = document.querySelectorAll('input[required], textarea[required], select[required]');
+  function updateProgress() {
+    let filled = 0;
+    fields.forEach(f => { if (f.value.trim()) filled++; });
+    document.getElementById('progress').style.width = Math.round((filled / fields.length) * 100) + '%';
+  }
+  fields.forEach(f => f.addEventListener('input', updateProgress));
+  fields.forEach(f => f.addEventListener('change', updateProgress));
+
+  // Collect checkbox groups into comma-separated strings
+  function collectCheckboxes(name) {
+    return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i => i.value).join(', ');
+  }
+
+  // Generate Application ID — e.g. WP-2026-A3F7
+  function generateAppId() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let rand = '';
+    for (let i = 0; i < 4; i++) rand += chars[Math.floor(Math.random() * chars.length)];
+    return 'WP-' + new Date().getFullYear() + '-' + rand;
+  }
+
+  // Form submit
+  document.getElementById('appForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+    const fd = new FormData(this);
+    const data = {};
+    fd.forEach((v, k) => { data[k] = v; });
+
+    // Override checkbox groups
+    ['tools', 'skills_done', 'ai_tools_used', 'ai_use_cases', 'languages', 'pcb_source', 'pcb_pain_points', 'industry_sector'].forEach(name => {
+      data[name] = collectCheckboxes(name);
+    });
+
+    // Add application ID + timestamp
+    const appId = generateAppId();
+    data['application_id'] = appId;
+    data['submitted_at'] = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+    // Show app ID immediately (before fetch, so candidate sees it even if slow)
+    document.getElementById('ty-appid').textContent = appId;
+
+    // Native form POST via hidden iframe — zero CORS issues, works from any domain
+    const hiddenForm = document.getElementById('_submitForm');
+    document.getElementById('_payloadInput').value = JSON.stringify(data);
+    hiddenForm.submit();
+
+    // Show thank you page
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('thank-you').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+<!--
+=================================================================
+HOW TO CONNECT TO GOOGLE SHEETS — 5-MINUTE SETUP
+=================================================================
+
+STEP 1: Create a new Google Sheet
+  - Go to sheets.google.com → New spreadsheet
+  - Name it: "WHYPCB Applications"
+  - Add these headers in Row 1 (exactly):
+    submitted_at | full_name | whatsapp | email | city | work_mode |
+    qualification | stream | experience_years | employment_status |
+    current_company | current_role | notice_period | expected_salary |
+    tools | primary_tool | pcb_count | skills_done | best_project |
+    portfolio_link | resume_note | ai_used | ai_tools_used | ai_use_cases |
+    ai_workflow_description | ai_replace_opinion | ai_open_to_learn |
+    scenario_1 | scenario_2 | scenario_3 | scenario_4 | speed_simple | speed_medium | speed_reverse | speed_blockers |
+    jlcpcb_familiarity | comm_comfort | languages | customer_reply |
+    sales_experience | industry_sector | company_uses_pcb | pcb_source |
+    company_pcb_volume | pcb_pain_points | pcb_decision_maker |
+    vendor_registration | why_whypcb | source | available_from |
+    preferred_hours | suggestions | anything_else
+
+STEP 2: Open Apps Script
+  - In your Sheet: Extensions → Apps Script
+  - Delete all existing code and paste this:
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var row = headers.map(function(h) { return data[h] || ''; });
+  sheet.appendRow(row);
+  return ContentService.createTextOutput('OK');
+}
+
+STEP 3: Deploy as Web App
+  - Click Deploy → New Deployment
+  - Type: Web App
+  - Execute as: Me
+  - Who has access: Anyone
+  - Click Deploy → Copy the URL
+
+STEP 4: Paste URL in this HTML file
+  - Find: const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+  - Replace with your copied URL
+
+STEP 5: Host the HTML file
+  - GitHub Pages (free): Push to a repo → Settings → Pages → Deploy
+  - Netlify Drop (free): drag-drop the HTML at netlify.drop.com
+  - Tiiny.host (free): upload at tiiny.host
+  - Or any static hosting service
+
+That's it. Every form submission will appear as a new row in your Google Sheet.
+=================================================================
+-->
+
+
+<!-- Hidden form for zero-CORS native POST submission -->
+<iframe name="_submitFrame" id="_submitFrame" style="display:none"></iframe>
+<form id="_submitForm" action="" method="POST" target="_submitFrame" style="display:none">
+  <input type="hidden" name="payload" id="_payloadInput" value="">
+</form>
+
+<script>
+  document.getElementById('_submitForm').action = GOOGLE_SCRIPT_URL;
+  document.getElementById('_submitFrame').onload = function() {
+    // iframe loaded = submission received
+  };
+</script>
+
+</body>
+</html>
